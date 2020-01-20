@@ -20,21 +20,29 @@ const (
 
 var (
 	//port string
-	healthy    int32
+	healthy int32
 )
 
 func main() {
-    //flag.StringVar(&port, "p", ":8000", "port to run on")
-    port := flag.String("p", "8000", "port to serve on")
-    directory := flag.String("d", ".", "the directory of static file to host")
-    flag.Parse()
-    listenAddr := ":" + *port
-	logger := log.New(os.Stdout, "http: ", log.LstdFlags)
+	//flag.StringVar(&port, "p", ":8000", "port to run on")
+	port := flag.String("p", "8000", "port to serve on")
+	directory := flag.String("d", ".", "the directory of static file to host")
+	logfile := flag.String("l", "./serve.log", "path/file to log to")
+	flag.Parse()
+	listenAddr := ":" + *port
+	file, err := os.OpenFile(*logfile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		msg := fmt.Sprintf("encountered and error openingthe logfile: %v", err)
+		fmt.Println(msg)
+		os.Exit(1)
+	}
+	logger := log.New(file, "http: ", log.LstdFlags)
+	// logger := log.New(os.Stdout, "http: ", log.LstdFlags)
 	logger.Println("Server is starting...")
 
 	router := http.NewServeMux()
-    router.Handle("/", http.FileServer(http.Dir(*directory)))
-    //router.Handle("/", index())
+	router.Handle("/", http.FileServer(http.Dir(*directory)))
+	//router.Handle("/", index())
 	//router.Handle("/healthz", healthz())
 
 	nextRequestID := func() string {
