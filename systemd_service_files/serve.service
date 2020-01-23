@@ -1,0 +1,9 @@
+[Unit]
+Description=serve out a dir
+
+[Service]
+Type=simple
+ExecStart=/home/usr/bin/serve -d /your/path/ -p 8080 -l /home/rxlx/bin/logs/serve.log
+
+[Install]
+WantedBy=multi-user.target
