@@ -24,7 +24,6 @@ var (
 )
 
 func main() {
-	//flag.StringVar(&port, "p", ":8000", "port to run on")
 	port := flag.String("p", "8000", "port to serve on")
 	directory := flag.String("d", ".", "the directory of static file to host")
 	logfile := flag.String("l", "./serve.log", "path/file to log to")
@@ -37,13 +36,10 @@ func main() {
 		os.Exit(1)
 	}
 	logger := log.New(file, "http: ", log.LstdFlags)
-	// logger := log.New(os.Stdout, "http: ", log.LstdFlags)
 	logger.Println("Server is starting...")
 
 	router := http.NewServeMux()
 	router.Handle("/", http.FileServer(http.Dir(*directory)))
-	//router.Handle("/", index())
-	//router.Handle("/healthz", healthz())
 
 	nextRequestID := func() string {
 		return fmt.Sprintf("%d", time.Now().UnixNano())
